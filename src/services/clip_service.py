@@ -2,8 +2,9 @@ import base64
 import binascii
 import io
 
+import numpy as np
 import structlog
-from onnx_clip import OnnxClip, get_similarity_scores, softmax
+from onnx_clip import OnnxClip, get_similarity_scores
 from PIL import Image
 
 logger = structlog.get_logger()
@@ -26,5 +27,7 @@ class CLIPService:
         image_embeddings = self._model.get_image_embeddings(images)
         text_embeddings = self._model.get_text_embeddings(prompts)
         logits = get_similarity_scores(image_embeddings, text_embeddings)
-        probs = softmax(logits)
+        max_logits = np.max(logits, axis=-1, keepdims=True)
+        exp_logits = np.exp(logits - max_logits)
+        probs = exp_logits / exp_logits.sum(axis=-1, keepdims=True)
         return [row.tolist() for row in probs]
