@@ -60,8 +60,10 @@ Response:
 | `make test` | Run tests with coverage |
 | `make lint` | ruff + mypy |
 | `make format` | Auto-format code |
-| `make docker-build` | Build Docker image |
+| `make docker-build` | Build Docker image (CPU) |
 | `make docker-run` | Run container on :8000 |
+| `make docker-build-gpu` | Build GPU Docker image (CUDA 12.4) |
+| `make docker-run-gpu` | Run GPU container with `--gpus all` |
 
 ## Configuration
 
