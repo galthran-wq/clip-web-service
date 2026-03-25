@@ -34,6 +34,13 @@ def configure_logging() -> None:
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     configure_logging()
     logger.info("startup", app_name=settings.app_name)
+
+    from src.dependencies import set_clip_service
+    from src.services.clip_service import CLIPService
+
+    clip_service = CLIPService(batch_size=settings.clip_batch_size)
+    set_clip_service(clip_service)
+
     yield
     logger.info("shutdown", app_name=settings.app_name)
 

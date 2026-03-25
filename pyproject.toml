@@ -1,5 +1,5 @@
 [project]
-name = "python-service-template"
+name = "clip-web-service"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
@@ -8,6 +8,7 @@ dependencies = [
     "pydantic-settings>=2.7.0",
     "structlog>=24.4.0",
     "prometheus-fastapi-instrumentator>=7.0.0",
+    "onnx-clip>=4.0.0",
 ]
 
 [dependency-groups]

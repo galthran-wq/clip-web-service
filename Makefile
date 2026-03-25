@@ -21,7 +21,7 @@ pre-commit:
 	uv run pre-commit install
 
 docker-build:
-	docker build -t python-service-template .
+	docker build -t clip-web-service .
 
 docker-run:
-	docker run -p 8000:8000 python-service-template
+	docker run -p 8000:8000 clip-web-service
