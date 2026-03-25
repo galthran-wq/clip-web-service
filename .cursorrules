@@ -1,0 +1,56 @@
+# CLIP Web Service — Cursor Rules
+
+## Project
+
+CLIP zero-shot image classification microservice built with FastAPI and onnx_clip (ONNX Runtime). No PyTorch dependency.
+
+## Commands
+
+- `make install` — install deps (uv sync)
+- `make run` — dev server with hot reload on :8000
+- `make test` — pytest with coverage
+- `make lint` — ruff check + mypy strict
+- `make format` — ruff format + ruff check --fix
+
+## Architecture
+
+Layered FastAPI microservice under `src/`:
+
+- `src/api/endpoints/` — Route handlers. Sync `def` for CPU-bound inference, `async def` for I/O-bound.
+- `src/schemas/` — Pydantic request/response models.
+- `src/services/` — Business logic. Must NOT import FastAPI. Injected via `src/dependencies.py` using `Depends()`.
+- `src/core/` — Middleware and exception handling.
+- `src/config.py` — Pydantic Settings from env vars / `.env`.
+- `src/main.py` — App factory with lifespan that loads CLIPService at startup.
+
+## Key Files
+
+- `src/services/clip_service.py` — Wraps `onnx_clip.OnnxClip`. Methods: `decode_image(b64)`, `classify(images, prompts)`.
+- `src/dependencies.py` — `get_clip_service()` / `set_clip_service()` for DI.
+- `src/api/endpoints/classify.py` — `POST /classify/batch` endpoint.
+- `src/schemas/classify.py` — `ClassifyBatchRequest`, `ClassifyBatchResponse`.
+
+## Code Style
+
+- Python 3.12+, all functions require type annotations (params and return)
+- Line length: 120
+- mypy strict mode with pydantic plugin
+- ruff for linting and formatting
+- Import order: stdlib → third-party → local
+- Use built-in generics (`list[str]` not `List[str]`)
+- Use `collections.abc` for abstract types
+
+## Patterns
+
+- Raise `AppError(status_code, detail)` — never catch broad `Exception`
+- Use `structlog.get_logger()` with key-value pairs
+- Tests use `mock_clip_service` fixture (MagicMock) — no real model loading
+- Test files mirror `src/api/endpoints/` structure
+- All tests are `async def` with pytest-asyncio auto mode
+
+## Adding a New Endpoint
+
+1. `src/api/endpoints/<domain>.py` with `router = APIRouter()`
+2. `src/schemas/<domain>.py` for request/response models
+3. Register in `src/api/router.py` via `router.include_router()`
+4. Tests in `tests/api/test_<domain>.py`
