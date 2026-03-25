@@ -10,8 +10,10 @@ make run            # Dev server with hot reload on :8000
 make test           # pytest with coverage
 make lint           # ruff check + mypy strict
 make format         # ruff format + ruff check --fix
-make docker-build   # Build Docker image
-make docker-run     # Run container on :8000
+make docker-build       # Build Docker image (CPU)
+make docker-run         # Run container on :8000
+make docker-build-gpu   # Build GPU image (CUDA 12.4, onnxruntime-gpu)
+make docker-run-gpu     # Run GPU container with --gpus all
 ```
 
 Run a single test file: `uv run pytest tests/api/test_classify.py`
