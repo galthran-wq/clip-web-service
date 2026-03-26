@@ -2,6 +2,7 @@ ARG CUDA_TAG=12.4.1-cudnn-runtime-ubuntu22.04
 
 FROM nvidia/cuda:${CUDA_TAG} AS builder
 
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     software-properties-common \
     && add-apt-repository ppa:deadsnakes/ppa \
@@ -24,6 +25,7 @@ RUN uv sync --frozen --no-dev --no-install-project \
 ARG CUDA_TAG=12.4.1-cudnn-runtime-ubuntu22.04
 FROM nvidia/cuda:${CUDA_TAG}
 
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     software-properties-common \
     && add-apt-repository ppa:deadsnakes/ppa \
